@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Cat } from "src/cats/cat.entity";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -6,11 +7,15 @@ export class User {
   id: number
 
   @Column()
-  firstName: string
+  username: string
 
   @Column()
-  lastName: string
+  password: string
 
   @Column()
   isActive: boolean
+
+  @OneToOne((type) => Cat)
+  @JoinColumn()
+  cat: Cat;
 }

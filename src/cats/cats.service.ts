@@ -1,19 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Cat } from './interfaces/cat.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Cat } from './cat.entity';
+// import { Cat } from './interfaces/cat.interface';
 
 @Injectable()
 export class CatsService {
-  private readonly cats: Cat[] = []
+  constructor(
+    @InjectRepository(Cat)
+    private catRepository: Repository<Cat>
+  ) { }
 
-  create(cat: Cat) {
-    this.cats.push(cat)
+  async create(cat: Cat) {
+    const data = new Cat()
+    data.name = cat.name
+    data.weight = cat.weight
+
+    return await this.catRepository.save(data)
   }
 
-  findAll(): Cat[] {
-    // return this.cats
-    throw new HttpException({
-      status: HttpStatus.FORBIDDEN,
-      error: 'this is a cuustom message'
-    }, HttpStatus.FORBIDDEN)
+  findAll(): Promise<Cat[]> {
+    return this.catRepository.find()
   }
 }

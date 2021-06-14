@@ -12,12 +12,15 @@ import { UsersModule } from './users/users.module';
 import { UploadController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [CatsModule,
     TypeOrmModule.forRoot(),
     UsersModule,
-    UploadModule],
+    UploadModule,
+    AuthModule,
+  ],
   controllers: [AppController, CatsController, UsersController, UploadController],
   providers: [AppService, CatsService, UsersService, UploadService],
 })
