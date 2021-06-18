@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cat } from 'src/cats/cat.entity';
+import { CreateCatDto } from 'src/cats/dto/create-cat.dto';
+import { CreatePhotoDto } from 'src/photos/dto/create-photo.dto';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/CreateUserDto';
 import { User } from './user.entity';
@@ -9,15 +11,16 @@ import { User } from './user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    @InjectRepository(Cat)
-    private catsRepository: Repository<Cat>
+    private usersRepository: Repository<User>
   ) { }
 
-  async create(user: CreateUserDto): Promise<User> {
+  async create(
+    user: CreateUserDto,
+    cat: CreateCatDto,
+    photos: CreatePhotoDto[]): Promise<User> {
     const catData = new Cat()
-    catData.name = 'cat2'
-    catData.weight = 'weight2'
+    catData.name = cat.name
+    catData.weight = cat.weight
 
 
     const userData = new User()
@@ -25,15 +28,16 @@ export class UsersService {
     userData.password = user.password
     userData.isActive = user.isActive
     userData.cat = catData
+    userData.photos = photos
 
     // 先保存cat
-    await this.catsRepository.save(catData)
+    // await this.catsRepository.save(catData)
     // 然后保存user
     return await this.usersRepository.save(userData)
   }
 
   findAll(): Promise<User[]> {
-    return this.usersRepository.find()
+    return this.usersRepository.find({ relations: ['cat', 'photos'] })
   }
 
   findOne(username: string): Promise<User> {

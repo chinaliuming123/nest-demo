@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/user.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Cat {
@@ -10,4 +11,7 @@ export class Cat {
 
   @Column()
   weight: string
+
+  @OneToOne((type) => User, userdata => userdata.cat)
+  metadata: User
 }
